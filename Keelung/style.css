@@ -1,0 +1,40 @@
+.bg-lightblue{
+    background-color: lightblue;
+}
+.bg-lightblue-darker{
+    background-color: rgb(102, 137, 150);
+}
+.bg-darkgreen{
+    background-color: rgb(59, 73, 63);
+}
+.bg-gray{
+    background-color: rgb(78, 78, 78);
+}
+.bg-brown{
+    background-color: burlywood;
+}
+.isButton:hover{
+    background-color: rgba(122, 158, 170, 0.548);
+}
+.no-border{
+    border-color: transparent;
+}
+/* .isCardImage{
+    width: 100%;
+    height: fit-content;
+    margin: 0 auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+} */
+.txt-shadow{
+    text-shadow: 3px 3px 8px #111;
+}
+.no-padding{
+    padding-left: 0;
+    padding-right:0;
+}

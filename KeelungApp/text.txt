@@ -1,0 +1,79 @@
+package com.example.demo;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.util.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+
+@RestController
+public class SightsController {
+    @GetMapping("/SightAPI?zone={input}")
+    public Sight[] getItems(@PathVariable String input){
+        ArrayList<Sight> s = new ArrayList<>();
+        input=input+"區";
+        int done=0;//找到目標區後就停止
+        try{
+            Document document = Jsoup.connect("https://www.travelking.com.tw/tourguide/taiwan/keelungcity/").get();
+            Elements landlink=document.select("div.box").select("ul").select("li").select("[href]");
+            for(Element ll: landlink){
+                Sight cursight = new Sight();
+                String url = ll.attr("href");
+                url = "https://www.travelking.com.tw" + url;
+                Document doc_land = Jsoup.connect(url).get();
+                Elements ZZ=doc_land.select("ol.breadcrumb").select("li.bc_last");
+                //System.out.println("Zone"+ZZ.text());
+                String xx= ZZ.text().toString();
+                if(xx.equals(input)){
+                    done=1;
+                    //System.out.println("success");
+                    cursight.setZone(xx);
+                    Elements sightname = doc_land.select("h1.h1").select("span");
+                    cursight.setSightName(sightname.text().toString());
+                    String category = doc_land.select("[property=rdfs:label]").text();
+                    cursight.setCategory(category);
+                    Elements imagelink = doc_land.select("div.gpic").select("[data-src]");
+                    ArrayList<String> image = new ArrayList<>();
+                    for (Element il : imagelink) {
+                        if (il != null) {
+                            String srcStr = il.attr("abs:data-src");
+                            image.add(srcStr);
+                            //System.out.println("PhotoURL " + srcStr);
+                        }
+                    }
+                    cursight.setPhotoURL(image);
+                    String description = doc_land.select("div.text").text();
+                    if (description != null) {
+                        cursight.setDescription(description);
+                        //System.out.println("Description" + description);
+                    }
+                    //觀光區地址
+                    Elements address = doc_land.select("div.address").select("p").select("span");
+                    if (address != null) {
+                        cursight.setAddress(address.text().toString());
+                        //System.out.println("Address" + address.text());
+                        s.add(cursight);
+                    }
+                }
+                else{
+                    if(done==1)break;
+                    //System.out.println("f");
+                }
+            }
+
+        }catch(Exception e){
+            System.out.println("Wrong");
+        }
+        int i=0;
+        Sight[] tmp= new Sight[s.size()];
+        for(Sight ss : s){
+            tmp[i++]=ss;
+        }
+        //System.out.println(s.size());
+        return tmp;
+    }
+}

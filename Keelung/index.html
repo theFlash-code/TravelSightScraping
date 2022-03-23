@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Keelung</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+            <div class="container">
+                <a href="index.html" class="navbar-brand"><span class="text-info">KeeLung</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navmenu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a onclick="showSights('七堵')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">七堵區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('中山')" class="btn isButton text-white btn-lg m-1"tabindex="-1" role="button" aria-disabled="true">中山區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('信義')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">信義區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('仁愛')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">仁愛區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('中正')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">中正區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('安樂')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">安樂區</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showSights('暖暖')" class="btn isButton text-white btn-lg m-1" tabindex="-1" role="button" aria-disabled="true">暖暖區</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <section class="py-3 px-5 bg-darkgreen" >
+            <div class="bg-darkgreen row row-cols-lg-4 row-cols-sm-3 row-cols-1  justify-content-center text-light" id="card-container">
+            </div>
+        </section>
+
+        <script>
+            function showSights(zone){
+                var card_container = document.querySelector('#card-container');
+                card_container.innerHTML = "Loading..."
+                var requestURL = 'http://127.0.0.1:8080/SightAPI？zone='+zone;
+                var request = new XMLHttpRequest();
+
+                request.open('GET', requestURL);
+                request.responseType = 'json';
+                request.send();
+                request.onload = function(){
+                    var sights = request.response;
+                    card_container.innerHTML = "";
+                    sights.forEach(constructSight);
+                    console.log('finished');
+                }
+                var i = 0;
+                function constructSight(sight){
+                    card_container.innerHTML += '<div class="card m-3 bg-darkgreen col no-border" >'+
+                    '<img class="card-img-top " data-bs-toggle="collapse"  href="#collapseExample'+i.toString()+'"  id="sightImg"src="'+sight['photoList'][0]+'" alt="Card image cap">'+
+                    '<div class="pt-2 px-2 bg-dark text-light">'+
+                    '<h5 class="card-title" id="sightName">'+sight['sightName']+'</h5>'+
+                    '</div>'+
+                    '<div class="card-body bg-dark text-light collapse multi-collapse" id="collapseExample'+i.toString()+'">'+
+                    '<h5 class="card-title">詳細資訊</h5>'+
+                    '<p class="card-text" id="content">'+"Zone: "+sight['Zone']+"<br>Category: "+sight['Category']+"<br>Description: "+sight['Description']+"<br>Address:<a target='_blank' href='https://www.google.com.tw/maps/search/"+sight['Address']+"''>"+sight['Address']+'</a></p>'+
+                    '</div>'+
+                    '</div>';
+                    i++;
+                }
+            }
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    </body>
+</html>
